@@ -1,0 +1,96 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-hackathon"
+version = "0.1.0"
+description = "A Django plugin for managing hackathons with GitHub integration"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "OWASP-BLT", email = "owasp.blt@gmail.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 4.0",
+    "Framework :: Django :: 4.1", 
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = ["django", "hackathon", "github", "plugin"]
+requires-python = ">=3.11"
+dependencies = [
+    "Django>=4.0,<6.0",
+    "requests>=2.31.0",
+    "python-dateutil>=2.9.0",
+    "pytz>=2023.3",
+    "Pillow>=10.0.0",  # For ImageField support
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=23.0.0",
+    "isort>=5.12.0", 
+    "ruff>=0.0.290",
+]
+test = [
+    "pytest>=7.0.0",
+    "pytest-django>=4.5.0",
+    "pytest-cov>=4.0.0",
+    "factory-boy>=3.2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/OWASP-BLT/BLT-Hackathon"
+Repository = "https://github.com/OWASP-BLT/BLT-Hackathon"
+Documentation = "https://github.com/OWASP-BLT/BLT-Hackathon#readme"
+Issues = "https://github.com/OWASP-BLT/BLT-Hackathon/issues"
+
+[tool.setuptools.packages.find]
+include = ["hackathon*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+hackathon = ["templates/**/*.html", "static/**/*"]
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | migrations
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 120
+multi_line_output = 3
+skip_glob = ["*/migrations/*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = ["migrations"]
