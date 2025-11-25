@@ -24,4 +24,4 @@ ssl
 google-credentials.json
 ansible/inventory.yml
 dist
-time_logging.egg-info
+blt_hackathon.egg-info
