@@ -401,8 +401,7 @@ class HackathonDashboard {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false,
-                        position: 'top'
+                        display: false
                     },
                     tooltip: {
                         mode: 'index',
