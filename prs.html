@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pull Requests - Hackathon Dashboard</title>
+    <meta name="description" content="View all pull requests in tabular form">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-code-branch text-red-600 text-xl sm:text-2xl mr-2 sm:mr-3"></i>
+                    <h1 class="text-base sm:text-lg lg:text-xl font-bold text-gray-900">Pull Requests</h1>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+            <h2 class="text-xl sm:text-2xl font-bold mb-4 text-gray-800">Pull Requests Table</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reviewer</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">State</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submitted</th>
+                        </tr>
+                    </thead>
+                    <tbody id="prs-table-body" class="bg-white divide-y divide-gray-200">
+                        <!-- Data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-600">
+            <p>Powered by <a href="https://github.com/OWASP-BLT/BLT-Hackathons" class="text-red-600 hover:underline" target="_blank" rel="noopener noreferrer">BLT-Hackathons</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Get hackathon slug from URL or default
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get('slug') || 'may-2025-hackathon'; // Default to one of the hackathons
+
+        async function loadPRs() {
+            try {
+                const response = await fetch(`hackathon-data/${slug}.json`);
+                const data = await response.json();
+                const stats = data.stats || {};
+                const leaderboard = stats.leaderboard || [];
+                const reviewLeaderboard = stats.reviewLeaderboard || [];
+
+                // Collect all reviews (which contain PR info)
+                const reviews = [];
+                [...leaderboard, ...reviewLeaderboard].forEach(p => {
+                    if (p.reviews) {
+                        p.reviews.forEach(review => {
+                            reviews.push({
+                                ...review,
+                                reviewer: p.username,
+                                reviewerAvatar: p.avatar
+                            });
+                        });
+                    }
+                });
+
+                const tbody = document.getElementById('prs-table-body');
+                tbody.innerHTML = '';
+
+                if (reviews.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-2 text-center text-gray-500">No pull request data available</td></tr>';
+                    return;
+                }
+
+                reviews.forEach(review => {
+                    const row = document.createElement('tr');
+                    const submittedDate = new Date(review.submitted_at).toLocaleDateString();
+                    row.innerHTML = `
+                        <td class="px-4 py-2">
+                            <a href="${review.html_url}" target="_blank" class="text-blue-600 hover:text-blue-800">${review.pull_request_title}</a>
+                        </td>
+                        <td class="px-4 py-2 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <img class="h-6 w-6 rounded-full mr-2" src="${review.reviewerAvatar}" alt="${review.reviewer}">
+                                <span class="text-sm text-gray-900">${review.reviewer}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-2 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                ${review.state === 'APPROVED' ? 'bg-green-100 text-green-800' : 
+                                  review.state === 'COMMENTED' ? 'bg-yellow-100 text-yellow-800' : 
+                                  'bg-gray-100 text-gray-800'}">
+                                ${review.state}
+                            </span>
+                        </td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">${submittedDate}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading PRs:', error);
+                document.getElementById('prs-table-body').innerHTML = '<tr><td colspan="4" class="px-4 py-2 text-center text-gray-500">Error loading data</td></tr>';
+            }
+        }
+
+        loadPRs();
+    </script>
+</body>
+</html>

@@ -25,6 +25,7 @@ class HackathonDashboard {
             this.updateBasicInfo();
 
             const slug = this.config.slug;
+            window.currentSlug = slug;
 
             // Load pre-fetched stats produced by fetch_stats.py
             let statsData;
@@ -349,9 +350,9 @@ class HackathonDashboard {
             console.warn('Chart.js is not available. Skipping chart rendering.');
             return;
         }
-        
+
         const dates = Object.keys(dailyActivity).sort();
-        
+
         // Use the pre-computed per-day merged count directly
         const data = dates.map(date => (dailyMergedPRs[date] || 0));
 
@@ -394,15 +395,15 @@ class HackathonDashboard {
                         },
                         cornerRadius: 8,
                         callbacks: {
-                            title: function(context) {
+                            title: function (context) {
                                 const date = new Date(context[0].label);
-                                return date.toLocaleDateString('en-US', { 
-                                    month: 'short', 
+                                return date.toLocaleDateString('en-US', {
+                                    month: 'short',
                                     day: 'numeric',
                                     year: 'numeric'
                                 });
                             },
-                            label: function(context) {
+                            label: function (context) {
                                 const value = context.parsed.y;
                                 return value === 1 ? '1 Pull Request' : `${value} Pull Requests`;
                             }
@@ -423,10 +424,10 @@ class HackathonDashboard {
                             minRotation: 0,
                             autoSkip: true,
                             maxTicksLimit: 10,
-                            callback: function(value, index) {
+                            callback: function (value, index) {
                                 const date = new Date(this.getLabelForValue(value));
-                                return date.toLocaleDateString('en-US', { 
-                                    month: 'short', 
+                                return date.toLocaleDateString('en-US', {
+                                    month: 'short',
                                     day: 'numeric'
                                 });
                             }
@@ -490,7 +491,7 @@ class HackathonDashboard {
         const container = document.getElementById('repositories-list');
         // Use resolved repositories if available, otherwise fall back to config
         const repositories = this.repositories || this.config.github.repositories || [];
-        
+
         // Build a lookup map from full_name -> repo metadata
         const repoMetaMap = {};
         repoData.forEach(repo => {
@@ -504,7 +505,7 @@ class HackathonDashboard {
         if (titleElement) {
             titleElement.textContent = `(${repositories.length})`;
         }
-        
+
         const reposHtml = repositories.map(repoPath => {
             const stats = repoStats[repoPath] || { total: 0, merged: 0, issues: 0, closedIssues: 0 };
             const meta = repoMetaMap[repoPath] || {};
@@ -648,8 +649,8 @@ class HackathonDashboard {
 
         const lastUpdatedHtml = this.loadedAt
             ? `<span class="inline-flex items-center gap-1 text-green-600"><i class="fas fa-sync-alt"></i> Stats auto-refreshed hourly</span>` +
-              `<span class="text-gray-400">|</span>` +
-              `<span>Last updated: <span id="last-updated-time" title="${this.loadedAt.toLocaleString()}">${this.timeAgo(this.loadedAt)}</span></span>`
+            `<span class="text-gray-400">|</span>` +
+            `<span>Last updated: <span id="last-updated-time" title="${this.loadedAt.toLocaleString()}">${this.timeAgo(this.loadedAt)}</span></span>`
             : '';
 
         infoEl.innerHTML = `<div class="flex flex-wrap items-center justify-center gap-2 text-sm">${lastUpdatedHtml}</div>`;
@@ -742,13 +743,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get slug from URL parameter
     const urlParams = new URLSearchParams(window.location.search);
     const slug = urlParams.get('slug');
-    
+
     // Find hackathon by slug
     let hackathonConfig;
     if (slug && typeof getHackathonBySlug === 'function') {
         hackathonConfig = getHackathonBySlug(slug);
     }
-    
+
     // If no slug or hackathon not found, try to use the first hackathon or fall back to legacy config
     if (!hackathonConfig) {
         // Check if legacy config exists (for backwards compatibility)
@@ -776,7 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
     }
-    
+
     const dashboard = new HackathonDashboard(hackathonConfig);
     dashboard.init();
 });

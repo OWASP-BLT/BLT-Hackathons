@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merged Pull Requests - Hackathon Dashboard</title>
+    <meta name="description" content="View merged pull requests in tabular form">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                      <i class="fas fa-check-circle text-green-600 text-xl sm:text-2xl mr-2 sm:mr-3"></i>
+                    <h1 class="text-base sm:text-lg lg:text-xl font-bold text-gray-900">Merged Pull Requests</h1>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+            <h2 class="text-xl sm:text-2xl font-bold mb-4 text-gray-800">Merged Pull Requests Table</h2>
+            <p class="text-sm text-gray-600 mb-4">Note: This shows repositories with their merged PR counts. Individual merged PR details are not available in the current data.</p>
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Repository</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Merged PRs</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total PRs</th>
+                        </tr>
+                    </thead>
+                    <tbody id="merged-prs-table-body" class="bg-white divide-y divide-gray-200">
+                        <!-- Data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-600">
+            <p>Powered by <a href="https://github.com/OWASP-BLT/BLT-Hackathons" class="text-red-600 hover:underline" target="_blank" rel="noopener noreferrer">BLT-Hackathons</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Get hackathon slug from URL or default
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get('slug') || 'may-2025-hackathon'; // Default to one of the hackathons
+
+        async function loadMergedPRs() {
+            try {
+                const response = await fetch(`hackathon-data/${slug}.json`);
+                const data = await response.json();
+                const repoStats = data.stats.repoStats || {};
+
+                const tbody = document.getElementById('merged-prs-table-body');
+                tbody.innerHTML = '';
+
+                Object.entries(repoStats).forEach(([repo, stats]) => {
+                    if (stats.merged > 0 || stats.total > 0) {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-4 py-2">
+                                <a href="https://github.com/${repo}" target="_blank" class="text-blue-600 hover:text-blue-800">${repo}</a>
+                            </td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">${stats.merged}</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">${stats.total}</td>
+                        `;
+                        tbody.appendChild(row);
+                    }
+                });
+
+                if (tbody.children.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-2 text-center text-gray-500">No merged PR data available</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading merged PRs:', error);
+                document.getElementById('merged-prs-table-body').innerHTML = '<tr><td colspan="3" class="px-4 py-2 text-center text-gray-500">Error loading data</td></tr>';
+            }
+        }
+
+        loadMergedPRs();
+    </script>
+</body>
+</html>

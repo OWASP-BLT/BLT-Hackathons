@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repositories - Hackathon Dashboard</title>
+    <meta name="description" content="View repositories in tabular form">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-code-branch text-red-600 text-xl sm:text-2xl mr-2 sm:mr-3"></i>
+                    <h1 class="text-base sm:text-lg lg:text-xl font-bold text-gray-900">Repositories</h1>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+            <h2 class="text-xl sm:text-2xl font-bold mb-4 text-gray-800">Repositories Table</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Repository</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pull Requests</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Merged PRs</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issues</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Closed Issues</th>
+                        </tr>
+                    </thead>
+                    <tbody id="repos-table-body" class="bg-white divide-y divide-gray-200">
+                        <!-- Data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-600">
+            <p>Powered by <a href="https://github.com/OWASP-BLT/BLT-Hackathons" class="text-red-600 hover:underline" target="_blank" rel="noopener noreferrer">BLT-Hackathons</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Get hackathon slug from URL or default
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get('slug') || 'may-2025-hackathon'; // Default to one of the hackathons
+
+        async function loadRepositories() {
+            try {
+                const response = await fetch(`hackathon-data/${slug}.json`);
+                const data = await response.json();
+                const repositories = data.repositories || [];
+                const repoStats = data.stats.repoStats || {};
+
+                const tbody = document.getElementById('repos-table-body');
+                tbody.innerHTML = '';
+
+                repositories.forEach(repo => {
+                    const stats = repoStats[repo] || { total: 0, merged: 0, issues: 0, closedIssues: 0 };
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-4 py-2">
+                            <a href="https://github.com/${repo}" target="_blank" class="text-blue-600 hover:text-blue-800">${repo}</a>
+                        </td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">${stats.total}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">${stats.merged}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">${stats.issues}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">${stats.closedIssues}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                if (tbody.children.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-2 text-center text-gray-500">No repositories available</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading repositories:', error);
+                document.getElementById('repos-table-body').innerHTML = '<tr><td colspan="5" class="px-4 py-2 text-center text-gray-500">Error loading data</td></tr>';
+            }
+        }
+
+        loadRepositories();
+    </script>
+</body>
+</html>
