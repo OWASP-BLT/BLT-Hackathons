@@ -74,18 +74,23 @@
                 const tbody = document.getElementById('merged-prs-table-body');
                 tbody.innerHTML = '';
 
-                Object.entries(repoStats).forEach(([repo, stats]) => {
-                    if (stats.merged > 0 || stats.total > 0) {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td class="px-4 py-2">
-                                <a href="https://github.com/${repo}" target="_blank" class="text-blue-600 hover:text-blue-800">${repo}</a>
-                            </td>
-                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">${stats.merged}</td>
-                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">${stats.total}</td>
-                        `;
-                        tbody.appendChild(row);
-                    }
+                // Create array of repos with stats for sorting
+                const reposArray = Object.entries(repoStats)
+                    .filter(([repo, stats]) => stats.merged > 0 || stats.total > 0)
+                    .map(([repo, stats]) => ({ repo, stats }))
+                    // Sort by merged count (descending - most merged first)
+                    .sort((a, b) => b.stats.merged - a.stats.merged);
+
+                reposArray.forEach(({ repo, stats }) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-4 py-2">
+                            <a href="https://github.com/${repo}" target="_blank" class="text-blue-600 hover:text-blue-800">${repo}</a>
+                        </td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">${stats.merged}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">${stats.total}</td>
+                    `;
+                    tbody.appendChild(row);
                 });
 
                 if (tbody.children.length === 0) {

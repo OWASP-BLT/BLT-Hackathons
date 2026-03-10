@@ -87,6 +87,9 @@
                     }
                 });
 
+                // Sort reviews by submitted_at date (most recent first)
+                reviews.sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at));
+
                 const tbody = document.getElementById('prs-table-body');
                 tbody.innerHTML = '';
 
