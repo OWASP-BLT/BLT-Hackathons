@@ -1,0 +1,21 @@
+{
+  "participantCount": 3,
+  "totalPRs": 117,
+  "mergedPRs": 88,
+  "totalIssues": 30,
+  "repositories": 53,
+  "topContributors": [
+    {
+      "username": "RudraBhaskar9439",
+      "avatar": "https://avatars.githubusercontent.com/u/185339801?v=4",
+      "url": "https://github.com/RudraBhaskar9439",
+      "mergedCount": 1
+    },
+    {
+      "username": "Kunal1522",
+      "avatar": "https://avatars.githubusercontent.com/u/67000702?v=4",
+      "url": "https://github.com/Kunal1522",
+      "mergedCount": 1
+    }
+  ]
+}
