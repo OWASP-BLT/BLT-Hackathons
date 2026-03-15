@@ -135,24 +135,24 @@
         </div>
 
         <!-- Quick Stats -->
-        <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3 lg:gap-4 mb-6 sm:mb-8">
-            <div class="bg-white rounded-lg shadow p-2 sm:p-4 lg:p-6 text-center">
+        <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 lg:gap-4 mb-6 sm:mb-8">
+            <div class="bg-white rounded-lg shadow p-2 sm:p-4 lg:p-6 text-center cursor-pointer hover:bg-gray-50 transition-colors" id="participant" onclick="window.location.href='participants.html?slug=' + (window.currentSlug || 'may-2025-hackathon')">
                 <h3 class="text-xs sm:text-sm lg:text-base font-semibold text-gray-700">Participants</h3>
                 <p class="text-lg sm:text-2xl lg:text-3xl font-bold text-red-600" id="participant-count">0</p>
             </div>
-            <div class="bg-white rounded-lg shadow p-2 sm:p-4 lg:p-6 text-center">
+            <div class="bg-white rounded-lg shadow p-2 sm:p-4 lg:p-6 text-center cursor-pointer hover:bg-gray-50 transition-colors" id="pr" onclick="window.location.href='prs.html?slug=' + (window.currentSlug || 'may-2025-hackathon')">
                 <h3 class="text-xs sm:text-sm lg:text-base font-semibold text-gray-700">Pull Requests</h3>
                 <p class="text-lg sm:text-2xl lg:text-3xl font-bold text-red-600" id="pr-count">0</p>
             </div>
-            <div class="bg-white rounded-lg shadow p-2 sm:p-4 lg:p-6 text-center">
+            <div class="bg-white rounded-lg shadow p-2 sm:p-4 lg:p-6 text-center cursor-pointer hover:bg-gray-50 transition-colors" id="merged-pr" onclick="window.location.href='merged-prs.html?slug=' + (window.currentSlug || 'may-2025-hackathon')">
                 <h3 class="text-xs sm:text-sm lg:text-base font-semibold text-gray-700">Merged PRs</h3>
                 <p class="text-lg sm:text-2xl lg:text-3xl font-bold text-red-600" id="merged-pr-count">0</p>
             </div>
-            <div class="bg-white rounded-lg shadow p-2 sm:p-4 lg:p-6 text-center">
+            <div class="bg-white rounded-lg shadow p-2 sm:p-4 lg:p-6 text-center cursor-pointer hover:bg-gray-50 transition-colors" id="issue" onclick="window.location.href='issues.html?slug=' + (window.currentSlug || 'may-2025-hackathon')">
                 <h3 class="text-xs sm:text-sm lg:text-base font-semibold text-gray-700">Issues</h3>
                 <p class="text-lg sm:text-2xl lg:text-3xl font-bold text-red-600" id="issue-count">0</p>
             </div>
-            <div class="bg-white rounded-lg shadow p-2 sm:p-4 lg:p-6 text-center">
+            <div class="bg-white rounded-lg shadow p-2 sm:p-4 lg:p-6 text-center cursor-pointer hover:bg-gray-50 transition-colors" id="repo" onclick="window.location.href='repositories.html?slug=' + (window.currentSlug || 'may-2025-hackathon')">
                 <h3 class="text-xs sm:text-sm lg:text-base font-semibold text-gray-700">Repositories</h3>
                 <p class="text-lg sm:text-2xl lg:text-3xl font-bold text-red-600" id="repo-count">0</p>
             </div>
